@@ -1,35 +1,20 @@
 import 'package:camera/camera.dart';
 
 class CameraService {
-  static CameraController? controller;
-  static List<CameraDescription>? cameras;
+  static late CameraController controller;
 
-  static Future<void> initializeCamera() async {
-    cameras = await availableCameras();
+  static Future init() async {
+    final cameras = await availableCameras();
 
     controller = CameraController(
-      cameras!.first,
+      cameras.first,
       ResolutionPreset.medium,
-      enableAudio: false,
     );
 
-    await controller!.initialize();
+    await controller.initialize();
   }
 
-  static Future<XFile?> takePicture() async {
-    try {
-      if (controller != null && controller!.value.isInitialized) {
-        return await controller!.takePicture();
-      }
-    } catch (e) {
-      print('Camera error: $e');
-    }
-
-    return null;
-  }
-
-  static void disposeCamera() {
-    controller?.dispose();
-    controller = null;
+  static Future<XFile> takePicture() async {
+    return controller.takePicture();
   }
 }
