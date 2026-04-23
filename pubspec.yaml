@@ -1,5 +1,5 @@
 name: food_recognizer_app
-description: Food Recognizer App
+description: Food Recognizer App Submission
 publish_to: "none"
 
 version: 1.0.0+1
@@ -13,26 +13,29 @@ dependencies:
 
   cupertino_icons: ^1.0.8
 
-  # CAMERA & IMAGE
+  # IMAGE & CAMERA
   image_picker: ^1.1.2
   image_cropper: ^7.1.0
-  camera: ^0.11.0
+  camera: ^0.11.0+2
   permission_handler: ^11.3.1
 
   # MACHINE LEARNING
   tflite_flutter: ^0.11.0
 
-  # FIREBASE (FIXED)
+  # FIREBASE
   firebase_core: ^2.32.0
-  firebase_ml_model_downloader: ^0.2.0
+  firebase_ml_model_downloader: ^0.2.1
 
-  # API
+  # NETWORK
   http: ^1.2.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_lints: ^5.0.0
 
 flutter:
   uses-material-design: true
 
+  assets:
+    - assets/model.tflite
