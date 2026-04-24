@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.dicoding.flutter.u758.submission"
+    namespace = "com.example.food_recognier"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -25,7 +25,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.dicoding.flutter.u758.submission"
+        applicationId = "com.example.food_recognier"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
