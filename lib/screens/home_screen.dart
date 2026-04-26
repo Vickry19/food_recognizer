@@ -24,9 +24,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void initModel() async {
-    final path = await FirebaseService.downloadModel();
+    try {
+      final path = await FirebaseService.downloadModel();
 
-    await MLService.loadModel(path);
+      await MLService.loadModel(path);
+
+      print("Model loaded successfully");
+    } catch (e) {
+      print("Error loading model: $e");
+    }
   }
 
   Future predict() async {
