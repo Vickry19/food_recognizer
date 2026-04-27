@@ -16,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   File? image;
   bool loading = false;
+  bool modelReady = false;
 
   @override
   void initState() {
@@ -23,11 +24,15 @@ class _HomeScreenState extends State<HomeScreen> {
     initModel();
   }
 
-  void initModel() async {
+  Future<void> initModel() async {
     try {
       final path = await FirebaseService.downloadModel();
 
       await MLService.loadModel(path);
+
+      setState(() {
+        modelReady = true;
+      });
 
       print("Model loaded successfully");
     } catch (e) {
@@ -37,6 +42,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future predict() async {
     if (image == null) return;
+
+    if (!modelReady) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Model masih dimuat, tunggu sebentar"),
+        ),
+      );
+      return;
+    }
 
     setState(() {
       loading = true;
@@ -89,8 +103,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: const Text("Pick from Gallery"),
                 ),
                 ElevatedButton(
-                  onPressed: predict,
-                  child: const Text("Predict"),
+                  onPressed: modelReady ? predict : null,
+                  child: Text(
+                    modelReady ? "Predict" : "Loading Model...",
+                  ),
                 )
               ],
             ),
