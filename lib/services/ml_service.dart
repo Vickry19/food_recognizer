@@ -80,14 +80,13 @@ class MLService {
         height: 224,
       );
 
-      // Input tensor
       var input = List.generate(
         1,
         (_) => List.generate(
           224,
           (_) => List.generate(
             224,
-            (_) => List.filled(3, 0.0),
+            (_) => List.filled(3, 0),
           ),
         ),
       );
@@ -96,16 +95,18 @@ class MLService {
         for (int x = 0; x < 224; x++) {
           final pixel = resized.getPixel(x, y);
 
-          input[0][y][x][0] = pixel.r / 255.0;
-          input[0][y][x][1] = pixel.g / 255.0;
-          input[0][y][x][2] = pixel.b / 255.0;
+          input[0][y][x][0] = pixel.r.toInt();
+          input[0][y][x][1] = pixel.g.toInt();
+          input[0][y][x][2] = pixel.b.toInt();
         }
       }
 
-      // Output tensor
+      final outputShape = interpreter.getOutputTensor(0).shape;
+      final outputSize = outputShape[1];
+
       var output = List.generate(
         1,
-        (_) => List.filled(labels.length, 0.0),
+        (_) => List.filled(outputSize, 0),
       );
 
       interpreter.run(input, output);
@@ -113,20 +114,29 @@ class MLService {
       int index = 0;
       double confidence = 0;
 
-      for (int i = 0; i < labels.length; i++) {
-        if (output[0][i] > confidence) {
-          confidence = output[0][i];
+      for (int i = 0; i < outputSize; i++) {
+        double currentConfidence = output[0][i] / 255.0;
+
+        if (currentConfidence > confidence) {
+          confidence = currentConfidence;
           index = i;
         }
       }
 
+      String predictedLabel;
+      if (index < labels.length) {
+        predictedLabel = labels[index];
+      } else {
+        predictedLabel = "Unknown (Index model: $index)";
+      }
+
       print("Prediction index: $index");
-      print("Prediction label: ${labels[index]}");
+      print("Prediction label: $predictedLabel");
       print("Confidence: $confidence");
 
       sendPort.send(
         Prediction(
-          label: labels[index],
+          label: predictedLabel,
           confidence: confidence,
         ),
       );
